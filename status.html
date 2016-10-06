@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>GitHubStatus</title>
+    <script src="js/jquery.min.js"></script>
+    <script src="https://www.atlasestateagents.co.uk/javascript/tether.min.js"></script><!-- Tether for Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+
+      <div class="header clearfix">
+        <h3 class="text-muted">GitHubStatus</h3>
+      </div>
+
+      <div class="alert alert-success" role="alert" id="git_success" style="display: none;">
+        <strong>Good!</strong> 落ちてないよー
+      </div>
+      <div class="alert alert-danger" role="alert" id="git_error" style="display: none;">
+        <strong>Out!</strong> ダメかもー
+      </div>
+
+      <audio src="audio/hotaru.mp3" controls>
+        <p>Your browser does not support the <code>audio</code> element </p>
+      </audio>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    $(document).ready(function(){
+      get_status();
+
+      setInterval(function(){
+        get_status();
+      }, 180*1000); // 180秒
+
+       function get_status() {
+         $.ajax({
+            url: "https://status.github.com/api/status.json",
+            type: "GET",
+            dataType: "jsonp",
+            success: function(res){
+              if (res["status"] == "good") {
+                if ($('#git_success').css('display') != 'block') {
+                  $("#git_success").show();
+                  $("#git_error").hide();
+                }
+              } else {
+                if ($('#git_error').css('display') != 'block') {
+                  $("#git_error").show();
+                  $("#git_success").hide();
+                  var audio = document.getElementsByTagName("audio")[0];
+                  audio.play();
+                }
+              }
+            }
+          });
+       }
+
+    });
+  </script>
+</body>
+
+</html>
